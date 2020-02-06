@@ -21,28 +21,28 @@ class EditGroupScreen extends Component {
           <View style={{ flex: 1 }}>
             < Text style={{ ...styles.textSmall }}>nazwa kategorii</Text>
             <View style={{ ...styles.header, backgroundColor: (this.props.group.color) ? this.props.group.color : "#000" }}></View>
-            <TextInput style={styles.headerInput} value={this.props.group.name} ></TextInput>
+            <TextInput style={styles.headerInput} onChange={(e) => { this.props.editGroup({ "name": e.nativeEvent.text }) }} value={this.props.group.name} ></TextInput>
             <View>
               < Text style={{ ...styles.textSmall, marginTop: 10 }}>kolor</Text>
               <View style={{ marginTop: 5, flexDirection: "row" }}>
-                <ColourButton color="#FE5454"></ColourButton>
-                <ColourButton color="#F1CC39"></ColourButton>
-                <ColourButton color="#6F89D1"></ColourButton>
-                <ColourButton color="#37E270"></ColourButton>
-                <ColourButton color="pink"></ColourButton>
-                <ColourButton color="purple"></ColourButton>
+                <ColourButton color="#FE5454" onClick={() => { this.props.editGroup({ "color": "#FE5454" }) }}></ColourButton>
+                <ColourButton color="#F1CC39" onClick={() => { this.props.editGroup({ "color": "#F1CC39" }) }}></ColourButton>
+                <ColourButton color="#6F89D1" onClick={() => { this.props.editGroup({ "color": "#6F89D1" }) }}></ColourButton>
+                <ColourButton color="#37E270" onClick={() => { this.props.editGroup({ "color": "#37E270" }) }}></ColourButton>
+                <ColourButton color="pink" onClick={() => { this.props.editGroup({ "color": "pink" }) }}></ColourButton>
+                <ColourButton color="purple" onClick={() => { this.props.editGroup({ "color": "purple" }) }}></ColourButton>
               </View>
             </View>
             <View>
               < Text style={{ ...styles.textSmall, marginTop: 20 }}>całkowity koszt</Text>
-              < Text style={{ ...styles.textMedium }}>{this.props.group.items.reduce((acc, curr) => acc + curr.price, 0)}zł</Text>
+              < Text style={{ ...styles.textMedium }}>{this.props.group.items.reduce((acc, curr) => (parseFloat(acc) + parseFloat(curr.price)), 0)}zł</Text>
             </View>
             < Text style={{ ...styles.textSmall, marginTop: 5 }}>przedmioty w kategorii</Text>
             <ScrollView style={{}}>
               <View style={{ margin: 10 }}>
                 {(this.props.group.items) ?
                   this.props.group.items.map((e, i) => {
-                    return <ShoppingListItem key={i} edited={(this.props.item && e == this.props.item)} edit={this.props.edit} item={e}></ShoppingListItem>
+                    return <ShoppingListItem key={i} edited={(this.props.item && e == this.props.item)} select={this.props.select} remove={this.props.remove} edit={this.props.editItem} item={e}></ShoppingListItem>
                   }) : null}
                 <AddItemButton onClick={() => { this.props.add() }}></AddItemButton>
               </View>

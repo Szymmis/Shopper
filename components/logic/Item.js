@@ -4,6 +4,7 @@ export default class Item {
         this.group = group;
         this.price = price;
         this.priority = Math.floor(Math.random()*3);
-        this.date = new Date().getDate();
+        let _date = new Date();
+        this.date = `0${_date.getUTCDay()}.0${_date.getUTCMonth()+1}`;
     }
 }

@@ -1,8 +1,8 @@
 {
+  "urlRandomness": "ec-s8i",
   "hostType": "lan",
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": "mi-wvm",
   "https": false
 }

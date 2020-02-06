@@ -18,7 +18,7 @@ class GroupsScreen extends Component {
     let toRender;
     if (this.props.groups) {
       toRender = this.props.groups.map((e, i) => {
-        return <GroupsListItem key={i} edit={() => { this.props.edit(e) }} group={e}></GroupsListItem>
+        return <GroupsListItem key={i} select={() => { this.props.select(e) }} group={e}></GroupsListItem>
       });
     }
 
