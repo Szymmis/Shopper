@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 
-const priorities = ["#FE5454", "#F1CC39", "#37E270"];
+const priorities = ["#FE5454", "#F1CC39", "#1ab34d"];
 
 class HomescreenListItem extends Component {
     constructor(props) {
@@ -15,13 +15,12 @@ class HomescreenListItem extends Component {
                     <TouchableOpacity style={styles.container}>
                         <View style={{ ...styles.header, backgroundColor: (this.props.item.priority != undefined) ? priorities[Math.min(this.props.item.priority, priorities.length)] : "#000" }}></View>
                         <View style={styles.content}>
-                            <View>
+                            <View style={{flexDirection: "row", justifyContent: "center", alignItems: "flex-end"}}>
                                 <Text> {this.props.item.name} </Text>
                                 {(this.props.item.group) ? <Text style={{ ...styles.textSmall, marginTop: -2 }}> {this.props.item.group.name} </Text> : null}
                             </View>
                             <View style={{ alignItems: "flex-end" }}>
-                                {(this.props.item.price) ? <Text style={{ color: "#007844", fontStyle: "italic" }}> {this.props.item.price}zł</Text> : null}
-                                {(this.props.item.date) ? <Text style={{ ...styles.textSmall }}> dodano {this.props.item.date}</Text> : null}
+                                {(this.props.item.price) ? <Text style={{ color: "#454545", fontStyle: "italic" }}> {this.props.item.price}zł</Text> : null}
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "#fff",
         elevation: 4,
-        marginBottom: 10,
+        marginBottom: 8,
         borderRadius: 8
     },
     header: {

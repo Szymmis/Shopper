@@ -14,7 +14,7 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      screen: 2,
+      screen: 0,
       groups: [new Group("Jedzenie", "#5569A2"), new Group("Higiena", "#53BB64"), new Group("Ciuchy", "#C273B5")],
       editedGroup: undefined,
       editedItem: undefined,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    marginHorizontal: 25,
+    marginHorizontal: 20,
     marginTop: 24,
   },
   navigationBar: {

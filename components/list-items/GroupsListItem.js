@@ -17,7 +17,7 @@ class GroupsListItem extends Component {
                     </View>
                     <View style={{ alignItems: "flex-end" }}>
                         <Text style={styles.textSmall}> całkowity koszt </Text>
-                        <Text style={{ ...styles.text, color: "#007844", fontStyle: "italic" }}> {this.props.group.items.reduce((acc, curr) => { return acc + parseFloat(curr.price); }, 0)}zł</Text>
+                        <Text style={{ ...styles.text, color: "#454545", fontStyle: "italic" }}> {this.props.group.items.reduce((acc, curr) => { return acc + parseFloat(curr.price); }, 0)}zł</Text>
                         {/* <Text style={styles.textSmall}> utworzona {new Date().getUTCDate()}.{new Date().getUTCMonth()}</Text> */}
 
                     </View>
