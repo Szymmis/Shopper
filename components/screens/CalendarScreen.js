@@ -1,43 +1,65 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import IconButton from '../buttons/IconButton';
-
-function numberOfDays(month) {
-  let _year = new Date().getFullYear();
-  return (month % 2 == 0) ? 31 : ((month == 1) ? (((_year % 4 == 0 && _year % 100 != 0) || _year % 400 == 0) ? 29 : 28) : 30);
-}
+import Calendar from '../Calendar';
+import TaskListItem from '../list-items/TaskListItem'
+import HomescreenListItem from '../list-items/HomescreenListItem'
+import Item from '../logic/Item'
+import Group from '../logic/Group'
 
 class CalendarScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentMonth: 1,
+      screen: 0,
+      selectedDay: 4
     };
+
+    this.selectDay = this.selectDay.bind(this);
+  }
+
+  selectDay(day) {
+    this.setState({ selectedDay: day });
   }
 
   render() {
-    let _date = new Date();
-    let _offset = new Date(_date.getUTCFullYear(), _date.getUTCMonth(), 1).getDay() - 1;
-    let number_of_weeks = Math.ceil((numberOfDays(_date.getUTCMonth()) + _offset - 1) / 7);
-    let toRender = [];
-    for (let i = 0; i < number_of_weeks; i++) {
-      let dayElements = [];
-      for (let j = i * 7 - _offset; j < i * 7 - _offset + 7; j++) {
-        dayElements.push(<View key={j} style={styles.day}><Text>{(j >= 0 && j < numberOfDays(_date.getUTCMonth())) ? j + 1 : ''}</Text></View>)
-      }
-
-      toRender.push(<View key={i} style={styles.week}>{dayElements}</View>)
-    }
-
     return (
       <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <IconButton size={24} name={"chevron-left"}></IconButton>
-          <Text style={styles.textMonth}>Luty</Text>
-          <IconButton size={24} name={"chevron-right"}></IconButton>
+        <Calendar currentMonth={this.state.currentMonth}
+          previous={() => { this.setState({ currentMonth: (this.state.currentMonth + 11) % 12 }) }}
+          next={() => { this.setState({ currentMonth: (this.state.currentMonth + 1) % 12 }) }}
+          select={this.selectDay}
+          selectedDay={this.state.selectedDay}></Calendar>
+        <View style={{ marginTop: 20, flexDirection: "row" }}>
+          <IconButton name={"list"} size={28} color={this.state.screen ? "" : "orange"} onClick={() => { this.setState({ screen: 0 }) }}></IconButton>
+          <IconButton style={{ marginTop: -6 }} color={!this.state.screen ? "" : "orange"} name={"shopping-cart"} size={32} onClick={() => { this.setState({ screen: 1 }) }}></IconButton>
         </View>
-        <View style={styles.calendar}>
-          {toRender}
-        </View>
+        {(this.state.selectedDay >= 0) ?
+          (this.state.screen) ?
+            <View style={{ ...styles.toBuyList, flex: 1 }}>
+              <Text style={{ ...styles.textSmall }}>zakupy zaplanowane na </Text>
+              <ScrollView style={{ ...styles.itemList }}>
+                <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
+                  <HomescreenListItem item={new Item("Humus", new Group("mniam"), 23)}></HomescreenListItem>
+                  <HomescreenListItem item={new Item("Czarna sukienka", new Group("ubrania"), 23)}></HomescreenListItem>
+                  <HomescreenListItem item={new Item("lalka", new Group("mniam"), 23)}></HomescreenListItem>
+                </View>
+              </ScrollView>
+            </View>
+            :
+            <View style={{ ...styles.toBuyList, flex: 1 }}>
+              <Text style={{ ...styles.textSmall, marginBottom: 4 }}>{(this.state.selectedDay) ? "zadania na " + (this.state.selectedDay + 1) + "." + (this.state.currentMonth + 1) : ""}</Text>
+              <ScrollView style={{ ...styles.itemList }}>
+                <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
+                  <TaskListItem item={new Item("Odebrać dzieci z przedszkola", new Group(""), 0)}></TaskListItem>
+                  <TaskListItem item={new Item("Skosić trawę", new Group(""), 0)}></TaskListItem>
+                  <TaskListItem item={new Item("Posprzątać poddasze", new Group(""), 0)} done={true}></TaskListItem>
+                  <TaskListItem item={new Item("Skosić trawę", new Group(""), 0)}></TaskListItem>
+                </View>
+              </ScrollView>
+            </View>
+          : null}
       </View >
     );
   }
@@ -48,31 +70,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 10,
   },
-  toolbar: {
-    marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center"
+  textSmall: {
+    fontSize: 12,
+    color: "#A8A8A8",
+    fontStyle: "italic",
+    alignSelf: "flex-end",
   },
-  textMonth: {
-    fontSize: 20
+  toBuyList: {
+    marginTop: 5
   },
-  calendar: {
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  day: {
-    width: 32,
-    height: 32,
-    backgroundColor: 'pink',
-    marginHorizontal: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  week: {
-    flexDirection: "row",
-    backgroundColor: "green",
-    marginVertical: 5,
-  }
 });
 
 export default CalendarScreen;

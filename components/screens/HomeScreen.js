@@ -15,7 +15,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{ ...styles.texts, fontSize: 24, marginBottom: 10, fontStyle: "italic", alignSelf: "flex-end", color: "#A8A8A8"}}>poniedziałek, 21.03</Text>
+        <Text style={{ ...styles.texts, fontSize: 24, marginBottom: 15, fontStyle: "italic", alignSelf: "flex-end", color: "#777"}}>poniedziałek, 21.03</Text>
         {/* <View style={{ marginTop: 18, flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={{ ...styles.textSmall }}>poniedziałek, 03.02</Text>
           <Text style={{ ...styles.textSmall }}>rozkład priorytetów</Text>
@@ -36,7 +36,7 @@ class HomeScreen extends Component {
             </View>
           </ScrollView>
         </View>
-        <View style={styles.costSection}>
+        {/* <View style={styles.costSection}>
           <View>
             <Text style={{ ...styles.textSmall, alignSelf: "flex-start" }}>dostępne środki</Text>
             <Text style={{ ...styles.textBig }}>884,32zł</Text>
@@ -45,8 +45,8 @@ class HomeScreen extends Component {
             <Text style={{ ...styles.textSmall }}>wydane pieniądze</Text>
             <Text style={{ ...styles.textBig }}>334,70zł</Text>
           </View>
-        </View>
-        <View style={{ ...styles.toBuyList, flex: 1 }}>
+        </View> */}
+        {/* <View style={{ ...styles.toBuyList, flex: 1 }}>
           <Text style={{ ...styles.textSmall }}>zakupy zaplanowane na dzisiaj</Text>
           <ScrollView style={{ ...styles.itemList }}>
             <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
@@ -65,7 +65,7 @@ class HomeScreen extends Component {
             <Text style={{ ...styles.textSmall }}>suma</Text>
             <Text style={{ ...styles.text }}>334,70zł</Text>
           </View>
-        </View>
+        </View> */}
       </View >
     );
   }
