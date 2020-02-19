@@ -13,24 +13,35 @@ class Calendar extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            month: (this.props.currentMonth) ? this.props.currentMonth : new Date().getUTCMonth(),
+            selectedDay: new Date().getDate()
         };
+    }
+
+    async select(day) {
+        if (!this.props.hideSelected)
+            await this.setState({ selectedDay: day });
+
+        if (this.props.onSelect)
+            this.props.onSelect(day);
+
     }
 
     render() {
         let _date = new Date();
-        let _offset = ((new Date(_date.getUTCFullYear(), this.props.currentMonth, 1).getDay() + 7) - 1) % 7;
-        let number_of_weeks = Math.ceil((numberOfDays(this.props.currentMonth) + _offset - 1) / 7);
+        let _offset = ((new Date(_date.getUTCFullYear(), this.state.month, 1).getDay() + 7) - 1) % 7;
+        let number_of_weeks = Math.ceil((numberOfDays(this.state.month) + _offset - 1) / 7);
         let toRender = [];
         for (let i = 0; i < number_of_weeks; i++) {
             let dayElements = [];
             let _counter = 0;
             for (let j = i * 7 - _offset; j < i * 7 - _offset + 7; j++ , _counter++) {
                 dayElements.push(<TouchableOpacity
-                    onPress={() => { if (j >= 0 && j < numberOfDays(this.props.currentMonth)) this.props.select(j) }}
+                    onPress={() => { if (j >= 0 && j < numberOfDays(this.state.month)) { this.select(j); } }}
                     key={j}
-                    style={{ ...styles.day, ...(j + 1 == _date.getDate() && _date.getUTCMonth() == this.props.currentMonth) ? styles.today : {}, backgroundColor: (j >= 0 && j < numberOfDays(this.props.currentMonth)) ? (_counter % 7 == 5 || _counter % 7 == 6) ? "#ffdae0" : "#f2f2f2" : "#fff", ...(j == this.props.selectedDay) ? styles.selected : {} }}>
+                    style={{ ...styles.day, ...(j + 1 == _date.getDate() && _date.getUTCMonth() == this.state.month) ? styles.today : {}, backgroundColor: (j >= 0 && j < numberOfDays(this.state.month)) ? (_counter % 7 == 5 || _counter % 7 == 6) ? "#ffdae0" : "#f2f2f2" : "#fff", ...(!!!this.props.hideSelected && j == this.state.selectedDay) ? styles.selected : {} }}>
                     <Text>
-                        {(j >= 0 && j < numberOfDays(this.props.currentMonth)) ? j + 1 : ''}
+                        {(j >= 0 && j < numberOfDays(this.state.month)) ? j + 1 : ''}
                     </Text>
                 </TouchableOpacity>)
             }
@@ -42,16 +53,16 @@ class Calendar extends Component {
             <View>
                 <View>
                     <View style={styles.toolbar}>
-                        <IconButton size={24} name={"chevron-left"} color={"#252525"} onClick={this.props.previous}></IconButton>
+                        <IconButton style={{ flex: 1 }}  size={24} name={"chevron-left"} color={"#252525"} onClick={() => { this.setState({ month: (this.state.month + 11) % 12 }) }}></IconButton>
                         <View>
                             <View style={{ ...styles.header, backgroundColor: "#252525" }}>
                                 <Text style={{ color: "white", textAlign: "center", marginVertical: 2 }}>2020</Text>
                             </View>
                             <View style={styles.monthHeader}>
-                                <Text style={styles.textMonth}>{MONTHS[this.props.currentMonth]}</Text>
+                                <Text style={styles.textMonth}>{MONTHS[this.state.month]}</Text>
                             </View>
                         </View>
-                        <IconButton size={24} name={"chevron-right"} color={"#252525"} onClick={this.props.next}></IconButton>
+                        <IconButton style={{ flex: 1 }}  size={24} name={"chevron-right"} color={"#252525"} onClick={() => { this.setState({ month: (this.state.month + 1) % 12 }); }}></IconButton>
                     </View>
                 </View>
                 <View style={styles.calendar}>
@@ -87,7 +98,8 @@ const styles = StyleSheet.create({
     },
     calendar: {
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        marginTop: 5,
     },
     day: {
         width: 32,

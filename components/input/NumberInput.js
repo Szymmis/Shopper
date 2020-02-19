@@ -14,7 +14,7 @@ export default class NumberInput extends Component {
     render() {
         return (
             <View>
-                <TextInput keyboardType={"numeric"} value={this.state.value} onKeyPress={(e) => {
+                <TextInput keyboardType={"numeric"} value={''+this.state.value} onKeyPress={(e) => {
                     console.log(e);
                 }} onChange={(e => {
                     // let input = e.nativeEvent.text;

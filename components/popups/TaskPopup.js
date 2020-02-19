@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Keyboard } from 'react-native';
 
 import ColourButton from '../buttons/ColourButton';
-import IconButton from '../buttons/IconButton';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 class TaskPopup extends Component {
     constructor(props) {
@@ -12,12 +10,23 @@ class TaskPopup extends Component {
         };
     }
 
+    componentDidMount() {
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', ()=>{
+            this.refs.name.blur();
+            this.refs.notes.blur();
+        });
+    }
+
+    componentWillUnmount(){
+        this.keyboardDidHideListener.remove();
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.section}>
                     <Text style={styles.textSmall}> treść zadania </Text>
-                    <TextInput style={styles.textInput} onFocus={() => { }}></TextInput>
+                    <TextInput ref="name" style={styles.textInput} onFocus={() => { }}></TextInput>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.textSmall}> priorytet</Text>
@@ -26,6 +35,10 @@ class TaskPopup extends Component {
                         <ColourButton style={{ height: 24 }} color={"#f1cc39"}></ColourButton>
                         <ColourButton style={{ height: 24 }} color={"#1ab34d"}></ColourButton>
                     </View>
+                </View>
+                <View style={styles.section}>
+                    <Text style={styles.textSmall}> notatki </Text>
+                    <TextInput ref="notes" multiline={true} maxHeight={100} onEndEditing={() => { console.log("test") }} style={{ ...styles.textInput, textAlign: "left", paddingHorizontal: 10 }} onFocus={() => { }}></TextInput>
                 </View>
                 {/* <View style={{ ...styles.section, marginTop: 25, padding: 10, justifyContent: "center", alignItems: "flex-end" }}>
                     <TouchableOpacity style={{ height: 50, width: 100, justifyContent: "center", alignItems: "center" }}>

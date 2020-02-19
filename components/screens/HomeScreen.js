@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import HomescreenListItem from '../list-items/HomescreenListItem';
 import TaskListItem from '../list-items/TaskListItem';
-import Item from '../logic/Item';
-import Group from '../logic/Group';
+import { Group, Item } from '../logic/Logic';
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -15,7 +14,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{ ...styles.texts, fontSize: 24, marginBottom: 15, fontStyle: "italic", alignSelf: "flex-end", color: "#777"}}>poniedziałek, 21.03</Text>
+        <Text style={{ ...styles.texts, fontSize: 24, marginBottom: 15, fontStyle: "italic", alignSelf: "flex-end", color: "#777" }}>poniedziałek, 21.03</Text>
         {/* <View style={{ marginTop: 18, flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={{ ...styles.textSmall }}>poniedziałek, 03.02</Text>
           <Text style={{ ...styles.textSmall }}>rozkład priorytetów</Text>

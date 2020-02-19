@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Group, TextInput, KeyboardAvoidingV
 import ShoppingListItem from '../list-items/ShoppingListItem'
 import ColourButton from '../buttons/ColourButton';
 import AddItemButton from '../buttons/AddItemButton';
+import IconButton from '../buttons/IconButton';
 
 class EditGroupScreen extends Component {
   constructor(props) {
@@ -19,9 +20,14 @@ class EditGroupScreen extends Component {
       <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={25} enabled>
         {(this.props.group) ?
           <View style={{ flex: 1 }}>
-            < Text style={{ ...styles.textSmall }}>nazwa kategorii</Text>
-            <View style={{ ...styles.header, backgroundColor: (this.props.group.color) ? this.props.group.color : "#000" }}></View>
-            <TextInput style={styles.headerInput} onChange={(e) => { this.props.editGroup({ "name": e.nativeEvent.text }) }} value={this.props.group.name} ></TextInput>
+            {/* <View style={{ flexDirection: "row" }}>
+              <IconButton style={{ flex: 0, marginRight: 12 }} name="trash"></IconButton>
+            </View> */}
+            <View style={{ }}>
+              < Text style={{ ...styles.textSmall }}>nazwa kategorii</Text>
+              <View style={{ ...styles.header, backgroundColor: (this.props.group.color) ? this.props.group.color : "#000" }}></View>
+              <TextInput style={styles.headerInput} onChange={(e) => { this.props.editGroup({ "name": e.nativeEvent.text }) }} value={this.props.group.name} ></TextInput>
+            </View>
             <View>
               < Text style={{ ...styles.textSmall, marginTop: 10 }}>kolor</Text>
               <View style={{ marginTop: 5, flexDirection: "row" }}>
@@ -35,7 +41,9 @@ class EditGroupScreen extends Component {
             </View>
             <View>
               < Text style={{ ...styles.textSmall, marginTop: 20 }}>całkowity koszt</Text>
-              < Text style={{ ...styles.textMedium }}>{this.props.group.items.reduce((acc, curr) => (parseFloat(acc) + parseFloat(curr.price)), 0)}zł</Text>
+              {(this.props.group.item) ?
+                < Text style={{ ...styles.textMedium }}>{this.props.group.items.reduce((acc, curr) => (parseFloat(acc) + parseFloat(curr.price)), 0)}zł</Text>
+                : null}
             </View>
             < Text style={{ ...styles.textSmall, marginTop: 5 }}>przedmioty w kategorii</Text>
             <ScrollView style={{}}>

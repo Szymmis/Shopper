@@ -43,7 +43,6 @@ class Shoppingitem extends Component {
                                                     this.props.edit({ "price": text });
                                                 }
                                             } style={styles.textInput} onFocus={(e) => { }}></TextInput>
-                                            <NumberInput></NumberInput>
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <Text style={{ ...styles.textSmall }}>data</Text>

@@ -4,7 +4,7 @@ import IconButton from '../buttons/IconButton';
 
 const priorities = ["#FE5454", "#F1CC39", "#1ab34d"];
 
-class HomescreenListItem extends Component {
+class TaskListItem extends Component {
     constructor(props) {
         super(props);
     }
@@ -15,9 +15,9 @@ class HomescreenListItem extends Component {
                 {(this.props.item) ?
                     <View style={{ flexDirection: "row", marginBottom: 8, borderRadius: 8, }}>
                         <View style={{ ...styles.header, width: (this.props.done) ? 30 : 10, backgroundColor: (this.props.item.priority != undefined) ? priorities[Math.min(this.props.item.priority, priorities.length)] : "#000" }}>
-                            {(this.props.done) ? <IconButton name="check" size={20} color={"white"}></IconButton> : null}
+                            {(this.props.done) ? <IconButton name="check" style={{}} size={20} color={"white"}></IconButton> : null}
                         </View>
-                        <TouchableOpacity style={{ ...styles.container, backgroundColor: (this.props.done) ? "#454545" : "#fff" }}>
+                        <TouchableOpacity style={{ ...styles.container, backgroundColor: (this.props.done) ? "#454545" : "#fff" }} onPress={this.props.onPress}>
                             <View style={{ ...styles.content, }}>
                                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "flex-end" }}>
                                     <Text style={{ color: (this.props.done) ? "white" : undefined }}> {this.props.item.name} </Text>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 8,
         borderBottomLeftRadius: 8,
         elevation: 4,
-
+        justifyContent: "center"
     },
     text: {
         fontSize: 18
@@ -66,4 +66,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default HomescreenListItem
+export default TaskListItem
