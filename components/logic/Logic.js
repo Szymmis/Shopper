@@ -21,7 +21,9 @@ export class Item {
 }
 
 export class Task {
-    constructor(name) {
+    constructor(name, time, priority) {
         this.name = name;
+        this.time = time;
+        this.priority = priority;
     }
 }

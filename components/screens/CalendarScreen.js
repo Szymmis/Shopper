@@ -5,53 +5,90 @@ import Calendar from '../Calendar';
 import TaskListItem from '../list-items/TaskListItem'
 import HomescreenListItem from '../list-items/HomescreenListItem'
 import { Group, Item, Task } from '../logic/Logic'
+import AddButton from '../buttons/AddButton';
 
 class CalendarScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      screen: 0,
     };
 
     this.selectDay = this.selectDay.bind(this);
+
   }
 
+  componentDidMount = () => {
+    let _date = new Date();
+    this.selectDay(_date.getDate() + "_" + _date.getMonth() + "_" + _date.getFullYear());
+  };
+
+
   selectDay(day) {
-    this.setState({ selectedDay: day });
+    console.log(day, parseInt(day.split("_")[0]));
+    this.setState({ date: day, selectedDay: parseInt(day.split("_")[0]) });
+  }
+
+  formatDate(date) {
+    let _ = date.split("_");
+    return `${_[0]}.${(_[1].length == 1) ? '0' + (parseInt(_[1]) + 1) : parseInt(_[1]) + 1}`;
+  }
+
+  scrollToBottom(type, h) {
+    if (this.state.scrollable) {
+      (type) ? this.refs.itemsScrollView.scrollTo({ 'y': h }) : this.refs.tasksScrollView.scrollTo({ 'y': h });
+      this.setState({ scrollable: false });
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Text style={{ ...styles.textSmall }}>wybierz datę </Text>
         <Calendar onSelect={this.selectDay}></Calendar>
         <View style={{ marginTop: 20, flexDirection: "row" }}>
           <IconButton style={{ flex: 1 }} name={"list"} size={28} color={this.state.screen ? "" : "orange"} onClick={() => { this.setState({ screen: 0 }) }}></IconButton>
           <IconButton style={{ flex: 1, marginTop: -6 }} color={!this.state.screen ? "" : "orange"} name={"shopping-cart"} size={32} onClick={() => { this.setState({ screen: 1 }) }}></IconButton>
         </View>
-        {(this.state.selectedDay >= 0) ?
+        {(this.state.selectedDay >= 0 && this.state.date) ?
           (this.state.screen) ?
             <View style={{ ...styles.toBuyList, flex: 1 }}>
-              <Text style={{ ...styles.textSmall }}>zakupy zaplanowane na </Text>
-              <ScrollView style={{ ...styles.itemList }}>
+              <Text style={{ ...styles.textSmall, marginRight: 10, marginBottom: 4 }}>zakupy zaplanowane na {this.formatDate(this.state.date)}</Text>
+              <ScrollView ref="itemsScrollView" style={{ ...styles.itemList }} onContentSizeChange={(w, h) => { this.scrollToBottom(1, h) }}>
                 <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
-                  <HomescreenListItem item={new Item("Humus", 23)}></HomescreenListItem>
-                  <HomescreenListItem item={new Item("Czarna sukienka", 23)}></HomescreenListItem>
-                  <HomescreenListItem item={new Item("lalka", 23)}></HomescreenListItem>
+                  {(this.props.data && this.state.date && this.props.data[this.state.date] && this.props.data[this.state.date].items) ?
+                    this.props.data[this.state.date].items.map((e, i) => <HomescreenListItem onPress={async () => { await this.props.select(1, e); this.props.showPopup(1); }} item={e} key={i}></HomescreenListItem>)
+                    : null}
+                  <AddButton text="dodaj przedmiot" onClick={(this.props.addToDate) ? () => {
+                    let item = new Item(`przedmiot ${Math.floor(Math.random() * 20)} `, "12.99");
+                    this.setState({ scrollable: true });
+                    this.props.addToDate(1, item, this.state.date);
+                    this.props.select(1, item);
+                    this.props.showPopup(1);
+                  } : {}}></AddButton>
                 </View>
               </ScrollView>
             </View>
             :
             <View style={{ ...styles.toBuyList, flex: 1 }}>
-              <Text style={{ ...styles.textSmall, marginBottom: 4 }}>{(this.state.selectedDay) ? "zadania na "/* + (this.state.selectedDay + 1) + "." + (this.state.currentMonth + 1) */ : ""}</Text>
-              <ScrollView style={{ ...styles.itemList }}>
+              <Text style={{ ...styles.textSmall, alignSelf: "flex-start", marginLeft: 10, marginBottom: 4 }}>{(this.state.selectedDay && this.state.date) ? "zadania zaplanowane na " + this.formatDate(this.state.date) : ""}</Text>
+              <ScrollView ref="tasksScrollView" style={{ ...styles.itemList }} onContentSizeChange={(w, h) => { this.scrollToBottom(0, h) }}>
                 <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
-                  <TaskListItem onPress={this.props.showPopup} item={new Task("Odebrać dzieci z przedszkola")}></TaskListItem>
-                  <TaskListItem item={new Task("Skosić trawę")}></TaskListItem>
-                  <TaskListItem item={new Task("Posprzątać poddasze")} done={true}></TaskListItem>
-                  <TaskListItem item={new Task("Skosić trawę")}></TaskListItem>
+                  {(this.props.data && this.state.date && this.props.data[this.state.date] && this.props.data[this.state.date].tasks) ?
+                    this.props.data[this.state.date].tasks.map((e, i) => <TaskListItem onPress={async () => { await this.props.select(0, e); this.props.showPopup(0); }} item={e} key={i}></TaskListItem>)
+                    : null}
+                  <AddButton text="dodaj zadanie" onClick={(this.props.addToDate) ? async () => {
+                    let task = new Task(`zadanie ${Math.floor(Math.random() * 100)}`);
+                    this.setState({ scrollable: true });
+                    this.props.addToDate(0, task, this.state.date);
+                    this.props.select(0, task);
+                    this.props.showPopup(0);
+                  } : {}}></AddButton>
                 </View>
               </ScrollView>
             </View>
-          : null}
+          : null
+        }
       </View >
     );
   }

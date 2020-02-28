@@ -13,6 +13,7 @@ class Popup extends Component {
 
 
         this.state = {
+            visibility: false,
             clickableThrough: true,
             interactable: false,
             opacity: new Animated.Value(0),
@@ -22,7 +23,7 @@ class Popup extends Component {
     }
 
     show() {
-        this.setState({ clickableThrough: false });
+        this.setState({ clickableThrough: false, visibility: true });
 
         Animated.timing(this.state.position, {
             toValue: 0,
@@ -37,12 +38,13 @@ class Popup extends Component {
     }
 
     hide() {
+        console.log("o co chodzi?")
         this.setState({ interactable: false })
         Animated.timing(this.state.position, {
             toValue: -this.props.height,
             duration: this.props.speed ? this.props.speed : 1000
         }).start(() => {
-            this.setState({ clickableThrough: true });
+            this.setState({ clickableThrough: true, visibility: false });
         });
         Animated.timing(this.state.opacity, {
             toValue: 0,
@@ -64,14 +66,16 @@ class Popup extends Component {
         })
 
         return (
-            <Animated.View style={{ ...styles.container, backgroundColor }} pointerEvents={(this.state.clickableThrough) ? "none" : "auto"}>
-                <Animated.View style={{ ...styles.popupContainer, height: this.state.height, bottom: this.state.position }} pointerEvents={(this.state.interactable) ? "auto" : "none"}>
-                    <View style={{ ...styles.header }}></View>
-                    <View style={{ ...styles.content, }}>
-                        {this.props.content}
-                    </View>
+            <View style={{ ...styles.container, elevation: 10 }} pointerEvents={(this.state.clickableThrough) ? "none" : "auto"}>
+                <Animated.View style={{ ...styles.container, backgroundColor, opacity: (this.state.visibility) ? 1 : 0 }} >
+                    <Animated.View style={{ ...styles.popupContainer, height: this.state.height, bottom: this.state.position }} pointerEvents={(this.state.interactable) ? "auto" : "none"}>
+                        <View style={{ ...styles.header }}></View>
+                        <View style={{ ...styles.content, }}>
+                            {this.props.content}
+                        </View>
+                    </Animated.View>
                 </Animated.View>
-            </Animated.View>
+            </View>
         );
     }
 }
@@ -79,10 +83,8 @@ class Popup extends Component {
 const styles = StyleSheet.create({
     container: {
         position: "absolute",
-        backgroundColor: "red",
         width: '100%',
         height: "100%",
-        elevation: 10
     },
     popupContainer: {
         position: "absolute",

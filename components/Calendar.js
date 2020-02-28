@@ -14,7 +14,8 @@ class Calendar extends Component {
         super(props);
         this.state = {
             month: (this.props.currentMonth) ? this.props.currentMonth : new Date().getUTCMonth(),
-            selectedDay: new Date().getDate()
+            selectedDay: new Date().getDate(),
+            year: 2020,
         };
     }
 
@@ -23,7 +24,7 @@ class Calendar extends Component {
             await this.setState({ selectedDay: day });
 
         if (this.props.onSelect)
-            this.props.onSelect(day);
+            this.props.onSelect(day + '_' + this.state.month + '_' + this.state.year);
 
     }
 
@@ -37,10 +38,10 @@ class Calendar extends Component {
             let _counter = 0;
             for (let j = i * 7 - _offset; j < i * 7 - _offset + 7; j++ , _counter++) {
                 dayElements.push(<TouchableOpacity
-                    onPress={() => { if (j >= 0 && j < numberOfDays(this.state.month)) { this.select(j); } }}
+                    onPress={() => { if (j >= 0 && j < numberOfDays(this.state.month)) { this.select(j + 1); } }}
                     key={j}
-                    style={{ ...styles.day, ...(j + 1 == _date.getDate() && _date.getUTCMonth() == this.state.month) ? styles.today : {}, backgroundColor: (j >= 0 && j < numberOfDays(this.state.month)) ? (_counter % 7 == 5 || _counter % 7 == 6) ? "#ffdae0" : "#f2f2f2" : "#fff", ...(!!!this.props.hideSelected && j == this.state.selectedDay) ? styles.selected : {} }}>
-                    <Text>
+                    style={{ ...styles.day, ...(j + 1 == _date.getDate() && _date.getUTCMonth() == this.state.month) ? styles.today : {}, backgroundColor: (j >= 0 && j < numberOfDays(this.state.month)) ? (_counter % 7 == 5 || _counter % 7 == 6) ? "#ffdae0" : "#f2f2f2" : "rgba(255,255,255,0)", ...(!!!this.props.hideSelected && j == this.state.selectedDay - 1) ? styles.selected : {} }}>
+                    <Text style={{ color: "black" }}>
                         {(j >= 0 && j < numberOfDays(this.state.month)) ? j + 1 : ''}
                     </Text>
                 </TouchableOpacity>)
@@ -53,16 +54,16 @@ class Calendar extends Component {
             <View>
                 <View>
                     <View style={styles.toolbar}>
-                        <IconButton style={{ flex: 1 }}  size={24} name={"chevron-left"} color={"#252525"} onClick={() => { this.setState({ month: (this.state.month + 11) % 12 }) }}></IconButton>
+                        <IconButton style={{ flex: 1 }} size={24} name={"chevron-left"} color={"#252525"} onClick={async () => { await this.setState({ month: (this.state.month + 11) % 12 }); this.select(this.state.selectedDay); }}></IconButton>
                         <View>
                             <View style={{ ...styles.header, backgroundColor: "#252525" }}>
-                                <Text style={{ color: "white", textAlign: "center", marginVertical: 2 }}>2020</Text>
+                                <Text style={{ color: "white", textAlign: "center", marginVertical: 2 }}>{this.state.year}</Text>
                             </View>
                             <View style={styles.monthHeader}>
                                 <Text style={styles.textMonth}>{MONTHS[this.state.month]}</Text>
                             </View>
                         </View>
-                        <IconButton style={{ flex: 1 }}  size={24} name={"chevron-right"} color={"#252525"} onClick={() => { this.setState({ month: (this.state.month + 1) % 12 }); }}></IconButton>
+                        <IconButton style={{ flex: 1 }} size={24} name={"chevron-right"} color={"#252525"} onClick={async () => { await this.setState({ month: (this.state.month + 1) % 12 }); this.select(this.state.selectedDay); }}></IconButton>
                     </View>
                 </View>
                 <View style={styles.calendar}>
@@ -76,7 +77,7 @@ class Calendar extends Component {
 const styles = StyleSheet.create({
     monthHeader: {
         backgroundColor: "#fff",
-        elevation: 4,
+        elevation: 1,
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
         paddingHorizontal: 20,

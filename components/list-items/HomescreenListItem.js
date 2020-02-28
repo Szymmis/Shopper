@@ -12,11 +12,11 @@ class HomescreenListItem extends Component {
         return (
             <View>
                 {(this.props.item) ?
-                    <TouchableOpacity style={styles.container}>
+                    <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
                         <View style={{ ...styles.header, backgroundColor: (this.props.item.priority != undefined) ? priorities[Math.min(this.props.item.priority, priorities.length)] : "#000" }}></View>
                         <View style={styles.content}>
-                            <View style={{flexDirection: "row", justifyContent: "center", alignItems: "flex-end"}}>
-                                <Text> {this.props.item.name} </Text>
+                            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "flex-end" }}>
+                                <Text style={{ color: "black" }}> {this.props.item.name} </Text>
                                 {(this.props.item.group) ? <Text style={{ ...styles.textSmall, marginTop: -2 }}> {this.props.item.group.name} </Text> : null}
                             </View>
                             <View style={{ alignItems: "flex-end" }}>

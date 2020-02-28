@@ -34,7 +34,7 @@ class GroupsListItem extends Component {
                     <View style={{ width: "20%", height: 5, backgroundColor: "#37E270" }}></View>
                 </View> */}
                 </TouchableOpacity>
-                <IconButton name={"trash"} style={{ marginLeft: 10 }} onClick={() => { if (this.props.remove) this.props.remove(this.props.group) }}></IconButton>
+                <IconButton name={"trash"} size={32} style={{ marginLeft: 10 }} onClick={() => { if (this.props.remove) this.props.remove(this.props.group) }}></IconButton>
             </View>
         )
     }

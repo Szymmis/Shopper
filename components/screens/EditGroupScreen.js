@@ -17,7 +17,7 @@ class EditGroupScreen extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={25} enabled>
+      <View style={styles.container}>
         {(this.props.group) ?
           <View style={{ flex: 1 }}>
             {/* <View style={{ flexDirection: "row" }}>
@@ -56,7 +56,7 @@ class EditGroupScreen extends Component {
               </View>
             </ScrollView>
           </View> : null}
-      </KeyboardAvoidingView >
+      </View >
     );
   }
 }

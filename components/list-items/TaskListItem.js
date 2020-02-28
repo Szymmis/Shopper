@@ -20,8 +20,8 @@ class TaskListItem extends Component {
                         <TouchableOpacity style={{ ...styles.container, backgroundColor: (this.props.done) ? "#454545" : "#fff" }} onPress={this.props.onPress}>
                             <View style={{ ...styles.content, }}>
                                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "flex-end" }}>
-                                    <Text style={{ color: (this.props.done) ? "white" : undefined }}> {this.props.item.name} </Text>
-                                    <Text style={{ ...styles.textSmall, marginTop: -2 }}> 10:30 - 12:30 </Text>
+                                    <Text style={{ color: (this.props.done) ? "white" : "black" }}> {this.props.item.name} </Text>
+                                    <Text style={{ ...styles.textSmall, marginTop: -2 }}> {this.props.item.time ? this.props.item.time : ''}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     text: {
-        fontSize: 18
+        fontSize: 18,
+        color: "black"
     },
     textSmall: {
         fontSize: 12,
