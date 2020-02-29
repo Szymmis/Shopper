@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, TouchableOpacity } from 'react-native';
 
 class Popup extends Component {
     defaultHeight;
@@ -68,12 +68,16 @@ class Popup extends Component {
         return (
             <View style={{ ...styles.container, elevation: 10 }} pointerEvents={(this.state.clickableThrough) ? "none" : "auto"}>
                 <Animated.View style={{ ...styles.container, backgroundColor, opacity: (this.state.visibility) ? 1 : 0 }} >
-                    <Animated.View style={{ ...styles.popupContainer, height: this.state.height, bottom: this.state.position }} pointerEvents={(this.state.interactable) ? "auto" : "none"}>
-                        <View style={{ ...styles.header }}></View>
-                        <View style={{ ...styles.content, }}>
-                            {this.props.content}
-                        </View>
-                    </Animated.View>
+                    <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => { this.hide(); }}>
+                        <Animated.View style={{ ...styles.popupContainer, height: this.state.height, bottom: this.state.position }} pointerEvents={(this.state.interactable) ? "auto" : "none"}>
+                            <TouchableOpacity style={{ flex: 1 }} activeOpacity={1}>
+                                <View style={{ ...styles.header }}></View>
+                                <View style={{ ...styles.content, }}>
+                                    {this.props.content}
+                                </View>
+                            </TouchableOpacity>
+                        </Animated.View>
+                    </TouchableOpacity>
                 </Animated.View>
             </View>
         );

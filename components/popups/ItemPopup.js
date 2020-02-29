@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, Keyboard } from 'react-native';
 import { Task } from '../logic/Logic';
 
+import DeleteButton from '../buttons/DeleteButton';
 import ColourButton from '../buttons/ColourButton';
 import IconButton from '../buttons/IconButton';
+import HomescreenListItem from '../list-items/HomescreenListItem';
 
 class ItemPopup extends Component {
     constructor(props) {
@@ -29,6 +31,10 @@ class ItemPopup extends Component {
             <View style={styles.container}>
                 {(this.props.selected) ?
                     <View>
+                        <View>
+                            <Text style={{ ...styles.textSmall, marginBottom: 6 }}> podgląd</Text>
+                            <HomescreenListItem item={this.props.selected}></HomescreenListItem>
+                        </View>
                         <View style={styles.section}>
                             <Text style={styles.textSmall}> nazwa przedmiotu </Text>
                             <TextInput ref="name" value={this.props.selected.name} style={styles.textInput} onChange={(e) => { this.props.edit(1, { 'name': e.nativeEvent.text }) }}></TextInput>
@@ -36,13 +42,18 @@ class ItemPopup extends Component {
                         <View style={styles.section}>
                             <Text style={styles.textSmall}> priorytet</Text>
                             <View style={{ flexDirection: "row", marginTop: 5 }}>
-                                <ColourButton style={{ height: 24 }} color={"#FE5454"}></ColourButton>
-                                <ColourButton style={{ height: 24 }} color={"#f1cc39"}></ColourButton>
-                                <ColourButton style={{ height: 24 }} color={"#1ab34d"}></ColourButton>
+                                <ColourButton style={{ height: 24 }} color={"#1ab34d"} onClick={() => this.props.edit(1, { 'priority': 2 })}></ColourButton>
+                                <ColourButton style={{ height: 24 }} color={"#f1cc39"} onClick={() => this.props.edit(1, { 'priority': 1 })}></ColourButton>
+                                <ColourButton style={{ height: 24 }} color={"#FE5454"} onClick={() => this.props.edit(1, { 'priority': 0 })}></ColourButton>
                             </View>
                         </View>
-                        <View style={{ flexDirection: "row", justifyContent: "center", marginHorizontal: 20 }}>
-                            <IconButton name={"trash"} style={{ marginTop: 8 }} onClick={() => { (this.props.remove) ? this.props.remove(1, this.props.selected) : '' }}></IconButton>
+                        <View style={styles.section}>
+                            <Text style={styles.textSmall}> cena przedmiotu </Text>
+                            <TextInput ref="name" value={this.props.selected.price} style={styles.textInput} onChange={(e) => { this.props.edit(1, { 'price': e.nativeEvent.text }) }}></TextInput>
+                        </View>
+                        <View style={{ ...styles.section }}>
+                            <Text style={styles.textSmall}> usuń zadanie </Text>
+                            <DeleteButton style={{ width: "30%", alignSelf: "center", elevation: 2, marginTop: 8 }} onClick={() => { (this.props.remove) ? this.props.remove(1, this.props.selected) : '' }}></DeleteButton>
                         </View>
                     </View>
 

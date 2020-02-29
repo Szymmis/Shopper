@@ -12,7 +12,7 @@ class HomescreenListItem extends Component {
         return (
             <View>
                 {(this.props.item) ?
-                    <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
+                    <TouchableOpacity style={styles.container} onPress={this.props.onPress} activeOpacity={(this.props.onPress ? 0.2 : 1)}>
                         <View style={{ ...styles.header, backgroundColor: (this.props.item.priority != undefined) ? priorities[Math.min(this.props.item.priority, priorities.length)] : "#000" }}></View>
                         <View style={styles.content}>
                             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "flex-end" }}>

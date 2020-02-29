@@ -11,6 +11,7 @@ import { Group, Item } from './components/logic/Logic';
 import TaskPopup from './components/popups/TaskPopup';
 import CalendarPopup from './components/popups/CalendarPopup';
 import ItemPopup from './components/popups/ItemPopup';
+import EditItemScreen from './components/screens/EditItemScreen';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height - StatusBar.currentHeight;
@@ -43,14 +44,14 @@ export default class App extends Component {
     })();
 
     this.state = {
-      screen: 2,
+      screen: 0,
       popupScreen: 0,
-      groups: [new Group("Jedzenie", "#5569A2"), new Group("Higiena", "#53BB64"), new Group("Ciuchy", "#C273B5")],
+      groups: [],
       editedGroup: undefined,
       editedItem: undefined,
       editedTask: undefined,
       // popupHeight: Dimensions.get("window").height / 2,
-      popupHeight: 260,
+      popupHeight: 360,
     }
 
     this.setScreen = this.setScreen.bind(this);
@@ -61,6 +62,7 @@ export default class App extends Component {
     this.select = this.select.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.editItem = this.editItem.bind(this);
+    this.selectItem = this.selectItem.bind(this);
     this.showPopup = this.showPopup.bind(this);
     this.saveData = this.saveData.bind(this);
     this.resetData = this.resetData.bind(this);
@@ -91,7 +93,7 @@ export default class App extends Component {
       data.groups = [...data.groups, group]
     else
       data.groups = [group]
-    await this.setState({ data })
+    await this.setState({ screen: 3, editedGroup: group, data })
     this.saveData();
   }
 
@@ -102,7 +104,7 @@ export default class App extends Component {
   async removeGroup(group) {
     let data = this.state.data;
     data.groups = data.groups.filter((value) => value != group)
-    await this.setState({ data });
+    await this.setState({ screen: 1, data });
     this.saveData();
   }
 
@@ -123,18 +125,21 @@ export default class App extends Component {
 
   async addItem(item) {
     this.state.editedGroup.items.push(item);
-    await this.setState({ groups: [...this.state.groups], editedItem: item });
+    await this.setState({ editedItem: item });
     this.saveData();
+  }
+
+  selectItem(item) {
+    this.setState({ editedItem: item, screen: 4 });
   }
 
   async removeItem(item) {
     this.state.editedGroup.items = this.state.editedGroup.items.filter((value) => { return value != item; });
-    await this.setState({ groups: [...this.state.groups] });
+    await this.setState({ screen: 3 });
     this.saveData();
   }
 
   async editItem(type, properties) {
-    console.log(properties);
     let data = this.state.data;
     let _keys = Object.keys(properties);
     for (let i = 0; i < _keys.length; i++) {
@@ -147,16 +152,12 @@ export default class App extends Component {
   }
 
   findDate(type, item) {
-    console.log("1");
     let data = this.state.data;
     let keys = Object.keys(data);
     let arr = (type) ? "items" : "tasks";
     for (let i = 0; i < keys.length; i++) {
-      console.log("2");
       let _key = keys[i];
-      console.log(data[_key][arr]);
       if (data[_key][arr]) {
-        console.log("3");
         for (let j = 0; j < data[_key][arr].length; j++) {
           if (data[_key][arr][j] == item) {
             return _key;
@@ -203,7 +204,8 @@ export default class App extends Component {
 
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (this.state.screen == 3) { this.setScreen(1); }
+      if (this.state.screen == 3) this.setScreen(1);
+      else if (this.state.screen == 4) this.setScreen(3);
       this.refs.popup.hide();
 
       return true;
@@ -227,10 +229,11 @@ export default class App extends Component {
     return (
       <View style={{ width: WIDTH, height: HEIGHT, top: (PRODUCTION) ? StatusBar.currentHeight : 0 }}>
         <View style={{ ...styles.container }}>
-          {(this.state.screen == 0) ? <HomeScreen></HomeScreen> :
+          {(this.state.screen == 0) ? <HomeScreen data={this.state.data} addToDate={this.addToDate} select={this.select} showPopup={this.showPopup}></HomeScreen> :
             (this.state.screen == 1) ? <GroupsScreen groups={this.state.data.groups} add={() => { this.addGroup(new Group("new group")) }} remove={this.removeGroup} select={this.selectGroup}></GroupsScreen> :
-              (this.state.screen == 2) ? <CalendarScreen addToDate={this.addToDate} data={this.state.data} select={this.select} showPopup={this.showPopup}></CalendarScreen> :
-                (this.state.screen == 3) ? <EditGroupScreen group={this.state.editedGroup} item={this.state.editedItem} add={() => { this.addItem(new Item("Przedmiot", 0)); }} select={this.selectItem} editGroup={this.editGroup} editItem={this.editItem} remove={this.removeItem}></EditGroupScreen> : null
+              (this.state.screen == 2) ? <CalendarScreen addToDate={this.addToDate} data={this.state.data} select={this.select} edit={this.editItem} showPopup={this.showPopup}></CalendarScreen> :
+                (this.state.screen == 3) ? <EditGroupScreen group={this.state.editedGroup} item={this.state.editedItem} add={() => { this.addItem(new Item("Przedmiot", 0)); }} select={this.selectItem} editGroup={this.editGroup} editItem={this.editItem} removeGroup={this.removeGroup} removeItem={this.removeItem}></EditGroupScreen> :
+                  (this.state.screen == 4) ? <EditItemScreen group={this.state.editedGroup} item={this.state.editedItem} edit={this.editItem} remove={this.removeItem}></EditItemScreen> : null
           }
         </View>
         <View style={styles.navigationBar}>

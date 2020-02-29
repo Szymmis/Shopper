@@ -26,8 +26,8 @@ class GroupsScreen extends Component {
       <View style={styles.container}>
         <View style={{ ...styles.groupsList }}>
           <Text style={{ ...styles.textSmall }}>zapisane kategorie</Text>
-          <ScrollView>
-            <View style={{ marginVertical: 10 }}>
+          <ScrollView style={{ marginTop: 10 }}>
+            <View style={{ paddingBottom: 26 }}>
               {toRender}
               <AddGroupButton onClick={() => { this.props.add(); }}></AddGroupButton>
             </View>

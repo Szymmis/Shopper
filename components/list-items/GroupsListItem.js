@@ -12,20 +12,21 @@ class GroupsListItem extends Component {
             <View style={{ flexDirection: "row" }}>
                 <TouchableOpacity onPress={() => { this.props.select(this.props.group) }} style={{ ...styles.container }}>
                     <View style={{ ...styles.header, backgroundColor: (this.props.group.color) ? this.props.group.color : "#000" }}></View>
-                    <View style={{ flex: 1, padding: 9, paddingTop: 6, flexDirection: "row", justifyContent: "space-between" }}>
+                    <View style={{ flex: 1, padding: 9, paddingTop: 6, justifyContent: "space-between" }}>
                         <View>
-                            <Text style={styles.text}> {this.props.group.name} </Text>
+                            <Text style={styles.text}> {(this.props.group.name.length <= 30) ? this.props.group.name : this.props.group.name.substring(0, 30) + "..."} </Text>
+                        </View>
+                        <View style={{ alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between" }}>
                             {(this.props.group.items) ?
                                 <Text style={styles.textSmall}> {this.props.group.items.length} przedmioty </Text>
                                 : null}
-                        </View>
-                        <View style={{ alignItems: "flex-end" }}>
-                            <Text style={styles.textSmall}> całkowity koszt </Text>
-                            {(this.props.group.items) ?
-                                <Text style={{ ...styles.text, color: "#454545", fontStyle: "italic" }}> {this.props.group.items.reduce((acc, curr) => { return acc + parseFloat(curr.price); }, 0)}zł</Text>
-                                : null}
+                            <View style={{flexDirection: "row", alignItems: "flex-end", }}>
+                                <Text style={styles.textSmall}> całkowity koszt </Text>
+                                {(this.props.group.items) ?
+                                    <Text style={{ ...styles.text, color: "#454545", fontStyle: "italic", marginBottom: -2}}> {this.props.group.items.reduce((acc, curr) => { return acc + parseFloat(curr.price); }, 0)}zł</Text>
+                                    : null}
+                            </View>
                             {/* <Text style={styles.textSmall}> utworzona {new Date().getUTCDate()}.{new Date().getUTCMonth()}</Text> */}
-
                         </View>
                     </View>
                     {/* <View style={styles.prioritiesBar}>
@@ -34,7 +35,7 @@ class GroupsListItem extends Component {
                     <View style={{ width: "20%", height: 5, backgroundColor: "#37E270" }}></View>
                 </View> */}
                 </TouchableOpacity>
-                <IconButton name={"trash"} size={32} style={{ marginLeft: 10 }} onClick={() => { if (this.props.remove) this.props.remove(this.props.group) }}></IconButton>
+                {/* <IconButton name={"trash"} size={32} style={{ marginLeft: 10 }} onClick={() => { if (this.props.remove) this.props.remove(this.props.group) }}></IconButton> */}
             </View>
         )
     }

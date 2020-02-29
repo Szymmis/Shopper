@@ -19,6 +19,39 @@ class Calendar extends Component {
         };
     }
 
+    getFormated() {
+        let formated = [];
+        if (this.props.format) {
+            for (let i = 0; i < Object.keys(this.props.format).length; i++) {
+                let _key = Object.keys(this.props.format)[i];
+                let splits = _key.split("_");
+                if (splits[1] == this.state.month) {
+                    formated[parseInt(splits[0])-1] = this.props.format[_key];
+                }
+            }
+        }
+
+        return formated;
+    }
+
+    getColor(formated, day, dayOfWeek) {
+
+        if (day >= 0 && day < numberOfDays(this.state.month)) {
+            if (day < formated.length && formated[day]) {
+                return formated[day];
+            }
+
+            //Jeśli sobota lub niedziela
+            if (dayOfWeek % 7 == 5 || dayOfWeek % 7 == 6)
+                return "#ffdae0"
+            //Normalny dzień tygodnia
+            else
+                return "#f2f2f2"
+        }
+
+        return "rgba(255,255,255,0)";
+    }
+
     async select(day) {
         if (!this.props.hideSelected)
             await this.setState({ selectedDay: day });
@@ -29,6 +62,8 @@ class Calendar extends Component {
     }
 
     render() {
+        let formated = this.getFormated();
+
         let _date = new Date();
         let _offset = ((new Date(_date.getUTCFullYear(), this.state.month, 1).getDay() + 7) - 1) % 7;
         let number_of_weeks = Math.ceil((numberOfDays(this.state.month) + _offset - 1) / 7);
@@ -37,14 +72,17 @@ class Calendar extends Component {
             let dayElements = [];
             let _counter = 0;
             for (let j = i * 7 - _offset; j < i * 7 - _offset + 7; j++ , _counter++) {
+                selected = (!!!this.props.hideSelected && j == this.state.selectedDay - 1) ? styles.selected : {};
+                isToday = (j + 1 == _date.getDate() && _date.getUTCMonth() == this.state.month) ? styles.today : {};
+                color = { backgroundColor: this.getColor(formated, j, _counter) };
                 dayElements.push(<TouchableOpacity
                     onPress={() => { if (j >= 0 && j < numberOfDays(this.state.month)) { this.select(j + 1); } }}
                     key={j}
-                    style={{ ...styles.day, ...(j + 1 == _date.getDate() && _date.getUTCMonth() == this.state.month) ? styles.today : {}, backgroundColor: (j >= 0 && j < numberOfDays(this.state.month)) ? (_counter % 7 == 5 || _counter % 7 == 6) ? "#ffdae0" : "#f2f2f2" : "rgba(255,255,255,0)", ...(!!!this.props.hideSelected && j == this.state.selectedDay - 1) ? styles.selected : {} }}>
+                    style={{ ...styles.day, ...isToday, ...color, ...selected }}>
                     <Text style={{ color: "black" }}>
                         {(j >= 0 && j < numberOfDays(this.state.month)) ? j + 1 : ''}
                     </Text>
-                </TouchableOpacity>)
+                </TouchableOpacity >)
             }
 
             toRender.push(<View key={i} style={styles.week}>{dayElements}</View>)
@@ -69,7 +107,7 @@ class Calendar extends Component {
                 <View style={styles.calendar}>
                     {toRender}
                 </View>
-            </View>
+            </View >
         );
     }
 }

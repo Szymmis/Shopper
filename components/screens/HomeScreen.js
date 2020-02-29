@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import HomescreenListItem from '../list-items/HomescreenListItem';
 import TaskListItem from '../list-items/TaskListItem';
-import { Group, Item } from '../logic/Logic';
+import { Task, Group, Item } from '../logic/Logic';
+import IconButton from '../buttons/IconButton';
+import AddButton from '../buttons/AddButton';
+
+const DAYS = ['Poniedziałek', "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -11,10 +15,18 @@ class HomeScreen extends Component {
     };
   }
 
+  formatDate(date) {
+    let _ = date.split("_");
+    return `${_[0]}.${(_[1].length == 1) ? '0' + (parseInt(_[1]) + 1) : parseInt(_[1]) + 1}`;
+  }
+
   render() {
+    let d = new Date();
+    let date = d.getDate() + "_" + d.getMonth() + "_" + d.getFullYear();
+
     return (
       <View style={styles.container}>
-        <Text style={{ ...styles.texts, fontSize: 24, marginBottom: 15, fontStyle: "italic", alignSelf: "flex-end", color: "#777" }}>poniedziałek, 21.03</Text>
+        <Text style={{ ...styles.texts, fontSize: 24, marginBottom: 15, fontStyle: "italic", alignSelf: "flex-end", color: "#777" }}>{DAYS[d.getDay() - 1].toLowerCase()}, {this.formatDate(date)}</Text>
         {/* <View style={{ marginTop: 18, flexDirection: "row", justifyContent: "space-between" }}>
           <Text style={{ ...styles.textSmall }}>poniedziałek, 03.02</Text>
           <Text style={{ ...styles.textSmall }}>rozkład priorytetów</Text>
@@ -25,46 +37,45 @@ class HomeScreen extends Component {
           <View style={{ width: "20%", height: 16, backgroundColor: "#1ab34d", borderTopRightRadius: 8, borderBottomRightRadius: 8 }}></View>
         </View> */}
         <View style={{ ...styles.toBuyList, flex: 1 }}>
-          <Text style={{ ...styles.textSmall }}>zadania na dzisiaj</Text>
-          <ScrollView style={{ ...styles.itemList }}>
-            <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
-              <TaskListItem item={new Item("Odebrać dzieci z przedszkola", new Group(""), 0)}></TaskListItem>
-              <TaskListItem item={new Item("Skosić trawę", new Group(""), 0)}></TaskListItem>
-              <TaskListItem item={new Item("Posprzątać poddasze", new Group(""), 0)} done={true}></TaskListItem>
-              <TaskListItem item={new Item("Zapłacić czynsz", new Group(""), 0)}></TaskListItem>
+          <View style={{ marginTop: 10, marginBottom: 8, flexDirection: "row" }}>
+            <IconButton style={{ flex: 1 }} name={"list"} size={28} color={this.state.screen ? "" : "orange"} onClick={() => { this.setState({ screen: 0 }) }}></IconButton>
+            <IconButton style={{ flex: 1, marginTop: -6 }} color={!this.state.screen ? "" : "orange"} name={"shopping-cart"} size={32} onClick={() => { this.setState({ screen: 1 }) }}></IconButton>
+          </View>
+          {(this.state.screen) ?
+            <View>
+              <Text style={{ ...styles.textSmall, marginRight: 10 }}>zakupy na dzisiaj</Text>
+              <ScrollView style={{ ...styles.itemList }}>
+                <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
+                  {(this.props.data && this.props.data[date] && this.props.data[date].items) ? this.props.data[date].items.map((e, i) => {
+                    return <HomescreenListItem item={e} key={i} onPress={async () => { await this.props.select(1, e); this.props.showPopup(1); }}></HomescreenListItem>
+                  }) : null}
+                  <AddButton text="dodaj przedmiot" onClick={() => {
+                    let item = new Item(`przedmiot ${Math.floor(Math.random() * 20)} `, "12.99");
+                    this.props.addToDate(1, item, date);
+                    this.props.select(1, item);
+                    this.props.showPopup(1);
+                  }}></AddButton>
+                </View>
+              </ScrollView>
+            </View> :
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...styles.textSmall, alignSelf: "flex-start", marginLeft: 10 }}>zadania na dzisiaj</Text>
+              <ScrollView style={{ ...styles.itemList }}>
+                <View style={{ marginHorizontal: 10, marginVertical: 5, paddingBottom: 0 }}>
+                  {(this.props.data && this.props.data[date] && this.props.data[date].tasks) ? this.props.data[date].tasks.map((e, i) => {
+                    return <TaskListItem item={e} key={i} onPress={async () => { await this.props.select(0, e); this.props.showPopup(0); }}></TaskListItem>
+                  }) : null}
+                  <AddButton text="dodaj zadanie" onClick={async () => {
+                    let task = new Task(`zadanie ${Math.floor(Math.random() * 100)}`);
+                    this.props.addToDate(0, task, date);
+                    this.props.select(0, task);
+                    this.props.showPopup(0);
+                  }}></AddButton>
+                </View>
+              </ScrollView>
             </View>
-          </ScrollView>
+          }
         </View>
-        {/* <View style={styles.costSection}>
-          <View>
-            <Text style={{ ...styles.textSmall, alignSelf: "flex-start" }}>dostępne środki</Text>
-            <Text style={{ ...styles.textBig }}>884,32zł</Text>
-          </View>
-          <View>
-            <Text style={{ ...styles.textSmall }}>wydane pieniądze</Text>
-            <Text style={{ ...styles.textBig }}>334,70zł</Text>
-          </View>
-        </View> */}
-        {/* <View style={{ ...styles.toBuyList, flex: 1 }}>
-          <Text style={{ ...styles.textSmall }}>zakupy zaplanowane na dzisiaj</Text>
-          <ScrollView style={{ ...styles.itemList }}>
-            <View style={{ marginHorizontal: 10, marginVertical: 5 }}>
-              <HomescreenListItem item={new Item("Humus", new Group("mniam"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("Czarna sukienka", new Group("ubrania"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("lalka", new Group("mniam"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("Czarna sukienka", new Group("ubrania"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("lalka", new Group("mniam"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("Czarna sukienka", new Group("ubrania"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("lalka", new Group("mniam"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("Czarna sukienka", new Group("ubrania"), 23)}></HomescreenListItem>
-              <HomescreenListItem item={new Item("lalka", new Group("mniam"), 23)}></HomescreenListItem>
-            </View>
-          </ScrollView>
-          <View style={{ paddingRight: 10, height: 50, marginTop: 10 }}>
-            <Text style={{ ...styles.textSmall }}>suma</Text>
-            <Text style={{ ...styles.text }}>334,70zł</Text>
-          </View>
-        </View> */}
       </View >
     );
   }
