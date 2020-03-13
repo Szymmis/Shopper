@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions, TouchableOpacity } from 'react-native';
 
+const STATES = {
+    none: 0,
+    showing: 1,
+    hiding: 2
+}
+
 class Popup extends Component {
     defaultHeight;
     maxOpacity;
@@ -13,6 +19,7 @@ class Popup extends Component {
 
 
         this.state = {
+            animationState: STATES.none,
             visibility: false,
             clickableThrough: true,
             interactable: false,
@@ -23,33 +30,36 @@ class Popup extends Component {
     }
 
     show() {
-        this.setState({ clickableThrough: false, visibility: true });
+        if (this.state.animationState == STATES.none) {
+            this.setState({ animationState: STATES.showing, clickableThrough: false, visibility: true });
 
-        Animated.timing(this.state.position, {
-            toValue: 0,
-            duration: this.props.speed ? this.props.speed : 1000
-        }).start(() => {
-            this.setState({ interactable: true })
-        });
-        Animated.timing(this.state.opacity, {
-            toValue: this.maxOpacity,
-            duration: this.props.speed ? this.props.speed / 3 * 2 : 1000
-        }).start();
+            Animated.timing(this.state.position, {
+                toValue: 0,
+                duration: this.props.speed ? this.props.speed : 1000
+            }).start(() => {
+                this.setState({ animationState: STATES.none, interactable: true })
+            });
+            Animated.timing(this.state.opacity, {
+                toValue: this.maxOpacity,
+                duration: this.props.speed ? this.props.speed / 3 * 2 : 1000
+            }).start();
+        }
     }
 
     hide() {
-        console.log("o co chodzi?")
-        this.setState({ interactable: false })
-        Animated.timing(this.state.position, {
-            toValue: -this.props.height,
-            duration: this.props.speed ? this.props.speed : 1000
-        }).start(() => {
-            this.setState({ clickableThrough: true, visibility: false });
-        });
-        Animated.timing(this.state.opacity, {
-            toValue: 0,
-            duration: this.props.speed ? this.props.speed / 3 * 2 : 1000
-        }).start();
+        if (this.state.animationState == STATES.none) {
+            this.setState({ animationState: STATES.hiding, interactable: false })
+            Animated.timing(this.state.position, {
+                toValue: -this.props.height,
+                duration: this.props.speed ? this.props.speed : 1000
+            }).start(() => {
+                this.setState({ animationState: STATES.none, clickableThrough: true, visibility: false });
+            });
+            Animated.timing(this.state.opacity, {
+                toValue: 0,
+                duration: this.props.speed ? this.props.speed / 3 * 2 : 1000
+            }).start();
+        }
     }
 
     resize(value, time) {

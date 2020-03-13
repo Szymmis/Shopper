@@ -7,11 +7,10 @@ import CalendarScreen from './components/screens/CalendarScreen';
 import EditGroupScreen from './components/screens/EditGroupScreen';
 import Popup from './components/popups/Popup'
 
-import { Group, Item } from './components/logic/Logic';
+import { Task, Group, Item } from './components/logic/Logic';
 import TaskPopup from './components/popups/TaskPopup';
 import CalendarPopup from './components/popups/CalendarPopup';
-import ItemPopup from './components/popups/ItemPopup';
-import EditItemScreen from './components/screens/EditItemScreen';
+import EditTaskScreen from './components/screens/EditTaskScreen';
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height - StatusBar.currentHeight;
@@ -84,6 +83,25 @@ export default class App extends Component {
   }
 
   setScreen(screen) {
+    if (this.state.editedTask) {
+      if (!this.state.editedTask.name || this.state.editedTask.name.trim() == '') {
+        this.removeFromDate(0, this.state.editedTask);
+      }
+    }
+
+    if (this.state.editedItem) {
+      if (!this.state.editedItem.name || this.state.editedItem.name.trim() == '') {
+        this.removeItem(this.state.editedItem);
+        this.setState({ editedItem: undefined });
+      }
+    }
+
+    if (this.state.editedGroup) {
+      if (!this.state.editedGroup.items || (this.state.editedGroup.items.length == 0 && !this.state.editedGroup.name)) {
+        this.removeGroup(this.state.editedGroup);
+      }
+    }
+
     this.setState({ screen });
   }
 
@@ -125,6 +143,7 @@ export default class App extends Component {
 
   async addItem(item) {
     this.state.editedGroup.items.push(item);
+    this.selectItem(item);
     await this.setState({ editedItem: item });
     this.saveData();
   }
@@ -204,8 +223,31 @@ export default class App extends Component {
 
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      console.log(this.state.screen)
       if (this.state.screen == 3) this.setScreen(1);
       else if (this.state.screen == 4) this.setScreen(3);
+
+      if (this.state.editedTask) {
+        if (!this.state.editedTask.name || this.state.editedTask.name.trim() == '') {
+          this.removeFromDate(0, this.state.editedTask);
+        }
+      }
+
+      if (this.state.editedItem) {
+        if (!this.state.editedItem.name || this.state.editedItem.name.trim() == '') {
+          this.removeItem(this.state.editedItem);
+          this.setState({ editedItem: undefined });
+          return true;
+        }
+      }
+
+      if (this.state.editedGroup) {
+        if (!this.state.editedGroup.items || (this.state.editedGroup.items.length == 0 && !this.state.editedGroup.name)) {
+          this.removeGroup(this.state.editedGroup);
+          return true;
+        }
+      }
+
       this.refs.popup.hide();
 
       return true;
@@ -229,15 +271,15 @@ export default class App extends Component {
     return (
       <View style={{ width: WIDTH, height: HEIGHT, top: (PRODUCTION) ? StatusBar.currentHeight : 0 }}>
         <View style={{ ...styles.container }}>
-          {(this.state.screen == 0) ? <HomeScreen data={this.state.data} addToDate={this.addToDate} select={this.select} showPopup={this.showPopup}></HomeScreen> :
-            (this.state.screen == 1) ? <GroupsScreen groups={this.state.data.groups} add={() => { this.addGroup(new Group("new group")) }} remove={this.removeGroup} select={this.selectGroup}></GroupsScreen> :
+          {(this.state.screen == 0) ? <HomeScreen ref="homeScreen" data={this.state.data} addToDate={this.addToDate} select={this.select} showPopup={this.showPopup}></HomeScreen> :
+            (this.state.screen == 1) ? <GroupsScreen groups={this.state.data.groups} add={() => { this.addGroup(new Group("")) }} remove={this.removeGroup} select={this.selectGroup}></GroupsScreen> :
               (this.state.screen == 2) ? <CalendarScreen addToDate={this.addToDate} data={this.state.data} select={this.select} edit={this.editItem} showPopup={this.showPopup}></CalendarScreen> :
-                (this.state.screen == 3) ? <EditGroupScreen group={this.state.editedGroup} item={this.state.editedItem} add={() => { this.addItem(new Item("Przedmiot", 0)); }} select={this.selectItem} editGroup={this.editGroup} editItem={this.editItem} removeGroup={this.removeGroup} removeItem={this.removeItem}></EditGroupScreen> :
-                  (this.state.screen == 4) ? <EditItemScreen group={this.state.editedGroup} item={this.state.editedItem} edit={this.editItem} remove={this.removeItem}></EditItemScreen> : null
+                (this.state.screen == 3) ? <EditGroupScreen group={this.state.editedGroup} item={this.state.editedItem} add={() => { this.addItem(new Task("zadanie")); }} select={this.selectItem} editGroup={this.editGroup} editItem={this.editItem} removeGroup={this.removeGroup} removeItem={this.removeItem}></EditGroupScreen> :
+                  (this.state.screen == 4) ? <EditTaskScreen group={this.state.editedGroup} item={this.state.editedItem} edit={this.editItem} remove={this.removeItem}></EditTaskScreen> : null
           }
         </View>
         <View style={styles.navigationBar}>
-          <IconButton style={{ flex: 1 }} onClick={() => { this.setScreen(2) }} name={"calendar"} size={32} color={(this.state.screen == 2) ? "#FFB300" : ""}></IconButton>
+          {/* <IconButton style={{ flex: 1 }} onClick={() => { this.setScreen(2) }} name={"calendar"} size={32} color={(this.state.screen == 2) ? "#FFB300" : ""}></IconButton> */}
           <IconButton style={{ flex: 1 }} onClick={() => { this.setScreen(0) }} name={"home"} size={40} color={(this.state.screen == 0) ? "#FFB300" : ""}></IconButton>
           <IconButton style={{ flex: 1 }} onClick={() => { this.setScreen(1) }} name={"shopping-cart"} size={36} color={(this.state.screen == 1) ? "#FFB300" : ""}></IconButton>
         </View>
@@ -245,9 +287,8 @@ export default class App extends Component {
         <Popup ref="popup" opacity={0.6} speed={300} height={this.state.popupHeight}
           content={
             (this.state.popupScreen) ?
-              <ItemPopup selected={this.state.editedItem} edit={this.editItem} remove={this.removeFromDate}></ItemPopup> :
+              <CalendarPopup onSelect={(selected) => { this.refs.popup.hide(); this.refs.homeScreen.selectDay(selected); }}></CalendarPopup> :
               <TaskPopup selected={this.state.editedTask} edit={this.editItem} remove={this.removeFromDate}></TaskPopup>
-            // <CalendarPopup onSelect={() => { this.refs.popup.hide() }}></CalendarPopup>
           }>
         </Popup>
       </View>

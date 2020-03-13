@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Group, TextInput, KeyboardAvoidingView } from 'react-native';
+import { Task } from '../logic/Logic';
 import ColourButton from '../buttons/ColourButton';
 import AddButton from '../buttons/AddButton';
 import IconButton from '../buttons/IconButton';
 import DeleteButton from '../buttons/DeleteButton';
-import HomescreenListItem from '../list-items/HomescreenListItem';
+import TaskListItem from '../list-items/TaskListItem';
 
 class EditGroupScreen extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class EditGroupScreen extends Component {
             <View style={{}}>
               < Text style={{ ...styles.textSmall }}>nazwa kategorii</Text>
               <View style={{ ...styles.header, backgroundColor: (this.props.group.color) ? this.props.group.color : "#000" }}></View>
-              <TextInput style={styles.headerInput} onChange={(e) => { this.props.editGroup({ "name": e.nativeEvent.text }) }} value={this.props.group.name} ></TextInput>
+              <TextInput style={styles.headerInput} placeholder="dotknij by wprowadzić" onChange={(e) => { this.props.editGroup({ "name": e.nativeEvent.text }) }} value={this.props.group.name} ></TextInput>
             </View>
             <View>
               < Text style={{ ...styles.textSmall, marginTop: 10 }}>kolor</Text>
@@ -38,28 +39,22 @@ class EditGroupScreen extends Component {
                 <ColourButton color="#37E270" onClick={() => { this.props.editGroup({ "color": "#37E270" }) }}></ColourButton>
                 <ColourButton color="pink" onClick={() => { this.props.editGroup({ "color": "pink" }) }}></ColourButton>
                 <ColourButton color="purple" onClick={() => { this.props.editGroup({ "color": "purple" }) }}></ColourButton>
+                {/* <IconButton name="edit"></IconButton> */}
               </View>
             </View>
-            {/* <View>
-              < Text style={{ ...styles.textSmall, marginTop: 20 }}>całkowity koszt</Text>
-              {(this.props.group.item) ?
-                < Text style={{ ...styles.textMedium }}>{this.props.group.items.reduce((acc, curr) => (parseFloat(acc) + parseFloat(curr.price)), 0)}zł</Text>
-                : null}
-            </View> */}
             <View style={{ marginTop: 8, flex: 1 }}>
-              < Text style={{ ...styles.textSmall, marginTop: 5 }}>przedmioty w kategorii</Text>
+              < Text style={{ ...styles.textSmall, marginTop: 5 }}>zadania w kategorii</Text>
               <ScrollView style={{}}>
                 <View style={{ margin: 10 }}>
                   {(this.props.group.items) ?
                     this.props.group.items.map((e, i) => {
-                      return <HomescreenListItem key={i} onPress={() => { if (this.props.select) this.props.select(e) }} select={this.props.select} remove={this.props.remove} edit={this.props.editItem} item={e}></HomescreenListItem>
+                      return <TaskListItem key={i} item={e} onPress={() => { if (this.props.select) this.props.select(e) }}></TaskListItem>
                     }) : null}
                   <AddButton text={"dodaj przedmiot"} onClick={() => { this.props.add() }}></AddButton>
                 </View>
               </ScrollView>
             </View>
             <View style={{ marginTop: 10, marginBottom: 12 }}>
-              {/* <Text style={{ ...styles.textSmall, marginTop: 5 }}>usuń kategorię</Text> */}
               <DeleteButton style={{ width: '40%', alignSelf: "center", elevation: 2 }} onClick={() => { this.props.removeGroup(this.props.group) }}></DeleteButton>
             </View>
           </View> : null}

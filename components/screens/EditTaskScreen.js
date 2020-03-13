@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Group, TextInput, KeyboardAvoidingView } from 'react-native';
 import ColourButton from '../buttons/ColourButton';
-import AddButton from '../buttons/AddButton';
-import IconButton from '../buttons/IconButton';
 import DeleteButton from '../buttons/DeleteButton';
-import HomescreenListItem from '../list-items/HomescreenListItem';
+import TaskListItem from '../list-items/TaskListItem';
 
 class EditItemScreen extends Component {
   constructor(props) {
@@ -24,11 +22,11 @@ class EditItemScreen extends Component {
             <View>
               <View>
                 <Text style={{ ...styles.textSmall, marginBottom: 8 }}>podgląd</Text>
-                <HomescreenListItem item={this.props.item}></HomescreenListItem>
+                <TaskListItem item={this.props.item}></TaskListItem>
               </View>
               <View style={{}}>
-                <Text style={{ ...styles.textSmall, marginTop: 8, marginBottom: 4 }}>nazwa przedmiotu</Text>
-                <TextInput style={styles.headerInput} onChange={(e) => { this.props.edit(1, { "name": e.nativeEvent.text }) }} value={this.props.item.name} ></TextInput>
+                <Text style={{ ...styles.textSmall, marginTop: 8, marginBottom: 4 }}>treść zadania</Text>
+                <TextInput style={styles.headerInput} placeholder="dotknij by wprowadzić" onChange={(e) => { this.props.edit(1, { "name": e.nativeEvent.text }) }} value={this.props.item.name} ></TextInput>
               </View>
               <View>
                 < Text style={{ ...styles.textSmall, marginTop: 10 }}>priorytet</Text>
@@ -37,10 +35,6 @@ class EditItemScreen extends Component {
                   <ColourButton style={{ height: 24 }} color="#F1CC39" onClick={() => { this.props.edit(1, { "priority": 1 }) }}></ColourButton>
                   <ColourButton style={{ height: 24 }} color="#1ab34d" onClick={() => { this.props.edit(1, { "priority": 2 }) }}></ColourButton>
                 </View>
-              </View>
-              <View style={{}}>
-                <Text style={{ ...styles.textSmall, marginTop: 8, marginBottom: 4 }}>cena</Text>
-                <TextInput style={styles.headerInput} onChange={(e) => { this.props.edit(1, { "price": e.nativeEvent.text }) }} value={this.props.item.price+""} ></TextInput>
               </View>
             </View>
             <View style={{ marginTop: 10, marginBottom: 12, }}>

@@ -14,18 +14,12 @@ class GroupsListItem extends Component {
                     <View style={{ ...styles.header, backgroundColor: (this.props.group.color) ? this.props.group.color : "#000" }}></View>
                     <View style={{ flex: 1, padding: 9, paddingTop: 6, justifyContent: "space-between" }}>
                         <View>
-                            <Text style={styles.text}> {(this.props.group.name.length <= 30) ? this.props.group.name : this.props.group.name.substring(0, 30) + "..."} </Text>
+                            <Text style={{ ...styles.text, ...(this.props.group.name) ? {} : { color: "#bbb", fontStyle: "italic"} }}> {(this.props.group.name) ? (this.props.group.name.length <= 30) ? this.props.group.name : this.props.group.name.substring(0, 30) + "..." : "<bez nazwy>"} </Text>
                         </View>
                         <View style={{ alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between" }}>
                             {(this.props.group.items) ?
-                                <Text style={styles.textSmall}> {this.props.group.items.length} przedmioty </Text>
+                                <Text style={styles.textSmall}> {this.props.group.items.length} zadania </Text>
                                 : null}
-                            <View style={{flexDirection: "row", alignItems: "flex-end", }}>
-                                <Text style={styles.textSmall}> całkowity koszt </Text>
-                                {(this.props.group.items) ?
-                                    <Text style={{ ...styles.text, color: "#454545", fontStyle: "italic", marginBottom: -2}}> {this.props.group.items.reduce((acc, curr) => { return acc + parseFloat(curr.price); }, 0)}zł</Text>
-                                    : null}
-                            </View>
                             {/* <Text style={styles.textSmall}> utworzona {new Date().getUTCDate()}.{new Date().getUTCMonth()}</Text> */}
                         </View>
                     </View>
@@ -36,7 +30,7 @@ class GroupsListItem extends Component {
                 </View> */}
                 </TouchableOpacity>
                 {/* <IconButton name={"trash"} size={32} style={{ marginLeft: 10 }} onClick={() => { if (this.props.remove) this.props.remove(this.props.group) }}></IconButton> */}
-            </View>
+            </View >
         )
     }
 }

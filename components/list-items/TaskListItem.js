@@ -13,7 +13,7 @@ class TaskListItem extends Component {
         return (
             <View>
                 {(this.props.item) ?
-                    <TouchableOpacity style={{ flexDirection: "row", marginBottom: 8, borderRadius: 8, }} onPress={this.props.onPress} delayLongPress={100} onLongPress={this.props.onLongPress} activeOpacity={(this.props.onPress) ? 0.2 : 1} >
+                    <TouchableOpacity style={{ flexDirection: "row", marginBottom: 8, borderRadius: 8, height: 30}} onPress={this.props.onPress} delayLongPress={100} onLongPress={this.props.onLongPress} activeOpacity={(this.props.onPress) ? 0.2 : 1} >
                         <View style={{ ...styles.header, width: (this.props.item.done) ? 30 : 12, backgroundColor: (this.props.item.priority != undefined) ? priorities[Math.min(this.props.item.priority, priorities.length)] : "#000" }}>
                             {(this.props.item.done) ? <Icon name="check" style={{ alignSelf: "center" }} size={20} color={"white"}></Icon> : null}
                         </View>
@@ -37,10 +37,11 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         backgroundColor: "#fff",
-        elevation: 4,
+        elevation: 3,
         borderTopRightRadius: 8,
         borderBottomRightRadius: 8,
-        flex: 1
+        flex: 1,
+        alignItems: "center"
     },
     header: {
         backgroundColor: "#f00",
